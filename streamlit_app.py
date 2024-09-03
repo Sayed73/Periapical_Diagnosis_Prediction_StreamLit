@@ -2,10 +2,72 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import pickle
+import boto3
+from io import StringIO
+from botocore.exceptions import ClientError
 
 # Load the saved model
 model_periapical = pickle.load(open('Periapical_Diagnosis_Prediction.sav', 'rb'))
 model_pulpal = pickle.load(open('pulpal_Diagnosis_Prediction.sav', 'rb'))
+
+aws_access_key_id = 'AKIAVRUVTPOM3YR6OWHO'
+aws_secret_access_key = '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'
+region_name = 'ap-southeast-2'
+    
+    # Initialize an S3 client
+s3 = boto3.client('s3', 
+                aws_access_key_id=aws_access_key_id,
+                aws_secret_access_key=aws_secret_access_key,
+                region_name=region_name)
+
+bucket_name = 'dentistry'
+file_name = 'patients.csv'
+
+# Function to check if file exists in S3
+def check_file_exists(bucket, key):
+    try:
+        s3.head_object(Bucket=bucket, Key=key)
+        return True
+    except ClientError:
+        return False
+
+# Function to read CSV from S3
+def read_csv_from_s3(bucket, key):
+    try:
+        response = s3.get_object(Bucket=bucket, Key=key)
+        return pd.read_csv(StringIO(response['Body'].read().decode('utf-8')))
+    except ClientError:
+        return pd.DataFrame()
+
+# Function to write CSV to S3
+def write_csv_to_s3(df, bucket, key):
+    csv_buffer = StringIO()
+    df.to_csv(csv_buffer, index=False)
+    s3.put_object(Bucket=bucket, Key=key, Body=csv_buffer.getvalue())
+
+def test_s3_record_addition():
+    # aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+    # aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+    # region_name = os.getenv('AWS_REGION', 'ap-southeast-2')
+    # bucket_name = os.getenv('S3_BUCKET_NAME')
+    # file_name = 'patients.csv'
+
+    # s3 = boto3.client('s3', 
+    #                   aws_access_key_id=aws_access_key_id,
+    #                   aws_secret_access_key=aws_secret_access_key,
+    #                   region_name=region_name)
+
+    # Read the file from S3
+    response = s3.get_object(Bucket=bucket_name, Key=file_name)
+    df = pd.read_csv(StringIO(response['Body'].read().decode('utf-8')))
+
+    # Print the last record (the newly added one)
+    st.write("Newly added record:")
+    st.write(df.tail(1))
+
+    # Print the total number of records
+    st.write(f"\nTotal number of records: {len(df)}")
+
 
 st.markdown("""
     <style>
@@ -149,7 +211,29 @@ def main():
         # st.markdown(f'<p style="font-size:24px; color:black; font-weight:bold;">Diagnosis :</p>', unsafe_allow_html=True)
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Pulpal diagnosis:</strong> {predicted_class_pulpal}  </p>', unsafe_allow_html=True)
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Periapical diagnosis:</strong> {predicted_class_periapical}  </p>', unsafe_allow_html=True)
+
+        # Save the record to S3
+        new_record = pd.DataFrame([features], columns=[
+            'pain_score', 'Painkiller_usage', 'Pain_duration', 'affected_tooth', 'tooth_open_history', 
+            'palpation', 'percussion', 'mobility', 'PAI_1', 'PAI_2', 'PAI_3', 'PAI_4', 'PAI_5', 
+            'acceptability', 'swelling_eo', 'swelling_io', 'sinus_tract', 'Pulp_Vitality'
+        ])
+        new_record['periapical_diagnosis'] = predicted_class_periapical
+        new_record['pulpal_diagnosis'] = predicted_class_pulpal
+
+        try:
+            if check_file_exists(bucket_name, file_name):
+                existing_df = read_csv_from_s3(bucket_name, file_name)
+                updated_df = pd.concat([existing_df, new_record], ignore_index=True)
+            else:
+                updated_df = new_record
+
+            write_csv_to_s3(updated_df, bucket_name, file_name)
+            st.success("Record saved successfully!")
+        except Exception as e:
+            st.error(f"An error occurred while saving the record: {str(e)}")
         
 
 if __name__ == "__main__":
     main()
+    test_s3_record_addition()
