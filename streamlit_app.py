@@ -133,7 +133,24 @@ def main():
         
     # Convert the input strings to numeric values
     tooth_open_history = 0 if tooth_open_history == 'No' else 1 if tooth_open_history == 'Yes' else 99
+    # Convert the input values to numeric
+    boolean_features = {
+        'swelling_eo': swelling_eo,
+        'swelling_io': swelling_io,
+        'sinus_tract': sinus_tract,
+        'palpation': palpation,
+        'percussion': percussion,
+        'mobility': mobility
+    }
+    
+    # Convert boolean values to 0 or 1
+    numeric_features = {k: int(v) for k, v in boolean_features.items()}
     st.write('palpation : ', palpation)
+    st.write('percussion : ', percussion)
+    st.write('mobility : ', mobility)
+    st.write('swelling_eo : ', swelling_eo)
+    st.write('swelling_io : ', swelling_io)
+    st.write('sinus_tract : ', sinus_tract)
 
     # Column 3 for PAI features
     with col3:
