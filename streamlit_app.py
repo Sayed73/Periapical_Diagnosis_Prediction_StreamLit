@@ -20,7 +20,7 @@ s3 = boto3.client('s3',
                 aws_secret_access_key=aws_secret_access_key,
                 region_name=region_name)
 
-bucket_name = 'dentistry'
+bucket_name = 'foodqast'
 file_name = 'patients.csv'
 
 # Function to check if file exists in S3
