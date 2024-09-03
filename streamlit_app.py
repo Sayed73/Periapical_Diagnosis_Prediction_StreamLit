@@ -122,29 +122,18 @@ def main():
         # Separating the features into two sub-columns
         sub_col1, sub_col2 = st.columns(2)
         with sub_col1:
-            swelling_eo = st.checkbox('Extra-Oral Swelling')
-            swelling_io = st.checkbox('Intra-Oral Swelling')
-            sinus_tract = st.checkbox('Sinus Tract')
+            swelling_eo = 1 if st.checkbox('Extra-Oral Swelling') else 0
+            swelling_io = 1 if st.checkbox('Intra-Oral Swelling') else 0
+            sinus_tract = 1 if st.checkbox('Sinus Tract') else 0
             tooth_open_history = st.selectbox('Was the tooth open Earlier ?', ['Yes', 'No', 'NA'])
         with sub_col2:
-            palpation = st.checkbox('Palpation')
-            percussion = st.checkbox('Percussion')
-            mobility = st.checkbox('Mobility')
+            palpation = 1 if st.checkbox('Palpation') else 0
+            percussion = 1 if st.checkbox('Percussion') else 0
+            mobility = 1 if st.checkbox('Mobility') else 0
         
     # Convert the input strings to numeric values
     tooth_open_history = 0 if tooth_open_history == 'No' else 1 if tooth_open_history == 'Yes' else 99
-    # Convert the input values to numeric
-    boolean_features = {
-        'swelling_eo': swelling_eo,
-        'swelling_io': swelling_io,
-        'sinus_tract': sinus_tract,
-        'palpation': palpation,
-        'percussion': percussion,
-        'mobility': mobility
-    }
-    
-    # Convert boolean values to 0 or 1
-    numeric_features = {k: int(v) for k, v in boolean_features.items()}
+
     st.write('palpation : ', palpation)
     st.write('percussion : ', percussion)
     st.write('mobility : ', mobility)
