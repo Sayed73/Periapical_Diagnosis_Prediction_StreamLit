@@ -231,6 +231,8 @@ def main():
             if check_file_exists(bucket_name, file_name):
                 existing_df = read_csv_from_s3(bucket_name, file_name)
                 updated_df = pd.concat([existing_df, new_record], ignore_index=True)
+                # Remove duplicates, keeping the first occurrence
+                updated_df = updated_df.drop_duplicates(keep='first')
             else:
                 updated_df = new_record
 
