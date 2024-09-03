@@ -63,7 +63,7 @@ def test_s3_record_addition():
 
     # Print the last record (the newly added one)
     st.write("Newly added record:")
-    st.write(df.tail(1))
+    st.dataframe(df)
 
     # Print the total number of records
     st.write(f"\nTotal number of records: {len(df)}")
@@ -133,7 +133,7 @@ def main():
         
     # Convert the input strings to numeric values
     tooth_open_history = 0 if tooth_open_history == 'No' else 1 if tooth_open_history == 'Yes' else 99
-    
+    st.write('palpation : ', palpation)
 
     # Column 3 for PAI features
     with col3:
