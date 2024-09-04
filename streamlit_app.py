@@ -10,18 +10,19 @@ from botocore.exceptions import ClientError
 model_periapical = pickle.load(open('Periapical_Diagnosis_Prediction.sav', 'rb'))
 model_pulpal = pickle.load(open('pulpal_Diagnosis_Prediction.sav', 'rb'))
 
-aws_access_key_id = 'AKIAVRUVTPOM3YR6OWHO'
-aws_secret_access_key = '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'
-region_name = 'us-east-2'
+# Access the secrets
+aws_access_key_id = st.secrets["aws_credentials"]["access_key_id"]
+aws_secret_access_key = st.secrets["aws_credentials"]["secret_access_key"]
+region_name = st.secrets["aws_credentials"]["region_name"]
     
-    # Initialize an S3 client
+# Initialize an S3 client
 s3 = boto3.client('s3', 
                 aws_access_key_id=aws_access_key_id,
                 aws_secret_access_key=aws_secret_access_key,
                 region_name=region_name)
 
-bucket_name = 'dentistry-zenn1'
-file_name = f'dev/patients.csv'
+bucket_name = st.secrets["s3"]["bucket_name"]
+file_name = st.secrets["s3"]["file_name"]
 
 # Function to check if file exists in S3
 def check_file_exists(bucket, key):
