@@ -5,6 +5,7 @@ import pickle
 import boto3
 from io import StringIO
 from botocore.exceptions import ClientError
+from datetime import datetime
 
 # Load the saved model
 model_periapical = pickle.load(open('Periapical_Diagnosis_Prediction.sav', 'rb'))
@@ -32,42 +33,29 @@ def check_file_exists(bucket, key):
     except ClientError:
         return False
 
-# Function to read CSV from S3
-def read_csv_from_s3(bucket, key):
+# Function to read Parquet from S3
+def read_parquet_from_s3(bucket, key):
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
-        return pd.read_csv(StringIO(response['Body'].read().decode('utf-8')))
+        return pd.read_parquet(BytesIO(response['Body'].read()))
     except ClientError:
         return pd.DataFrame()
 
-# Function to write CSV to S3
-def write_csv_to_s3(df, bucket, key):
-    csv_buffer = StringIO()
-    df.to_csv(csv_buffer, index=False)
-    s3.put_object(Bucket=bucket, Key=key, Body=csv_buffer.getvalue())
+# Function to write Parquet to S3
+def write_parquet_to_s3(df, bucket, key):
+    parquet_buffer = BytesIO()
+    df.to_parquet(parquet_buffer, index=False)
+    s3.put_object(Bucket=bucket, Key=key, Body=parquet_buffer.getvalue())
 
-def test_s3_record_addition():
-    # aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-    # aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-    # region_name = os.getenv('AWS_REGION', 'ap-southeast-2')
-    # bucket_name = os.getenv('S3_BUCKET_NAME')
-    # file_name = 'patients.csv'
-
-    # s3 = boto3.client('s3', 
-    #                   aws_access_key_id=aws_access_key_id,
-    #                   aws_secret_access_key=aws_secret_access_key,
-    #                   region_name=region_name)
-
-    # Read the file from S3
-    response = s3.get_object(Bucket=bucket_name, Key=file_name)
-    df = pd.read_csv(StringIO(response['Body'].read().decode('utf-8')))
-
-    # Print the last record (the newly added one)
-    st.write("Newly added record:")
-    st.dataframe(df)
-
-    # Print the total number of records
-    st.write(f"\nTotal number of records: {len(df)}")
+# Test function to view Parquet file contents
+def test_view_parquet_file():
+    if check_file_exists(bucket_name, file_name):
+        df = read_parquet_from_s3(bucket_name, file_name)
+        st.write("Contents of the Parquet file:")
+        st.dataframe(df)
+        st.write(f"Total number of records: {len(df)}")
+    else:
+        st.write("Parquet file does not exist in the S3 bucket.")
 
 
 st.markdown("""
@@ -227,22 +215,26 @@ def main():
         ])
         new_record['periapical_diagnosis'] = predicted_class_periapical
         new_record['pulpal_diagnosis'] = predicted_class_pulpal
+        new_record['record_date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         try:
             if check_file_exists(bucket_name, file_name):
-                existing_df = read_csv_from_s3(bucket_name, file_name)
+                existing_df = read_parquet_from_s3(bucket_name, file_name)
                 updated_df = pd.concat([existing_df, new_record], ignore_index=True)
                 # Remove duplicates, keeping the first occurrence
                 updated_df = updated_df.drop_duplicates(keep='first')
             else:
                 updated_df = new_record
 
-            write_csv_to_s3(updated_df, bucket_name, file_name)
+            write_parquet_to_s3(updated_df, bucket_name, file_name)
             st.success("Record saved successfully!")
         except Exception as e:
             st.error(f"An error occurred while saving the record: {str(e)}")
         
-
+    # Add a button to view the Parquet file contents
+    if st.button('View Parquet File Contents'):
+        test_view_parquet_file()
+        
 if __name__ == "__main__":
     main()
     # test_s3_record_addition()
