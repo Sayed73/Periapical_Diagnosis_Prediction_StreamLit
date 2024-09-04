@@ -232,9 +232,11 @@ def main():
             st.error(f"An error occurred while saving the record: {str(e)}")
         
     # Add a button to view the Parquet file contents
-    if st.button('View Parquet File Contents'):
-        test_view_parquet_file()
+    # if st.button('View Parquet File Contents'):
+    #     test_view_parquet_file()
         
 if __name__ == "__main__":
     main()
+    test_view_parquet_file()
     # test_s3_record_addition()
+
