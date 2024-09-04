@@ -12,7 +12,7 @@ model_pulpal = pickle.load(open('pulpal_Diagnosis_Prediction.sav', 'rb'))
 
 aws_access_key_id = 'AKIAVRUVTPOM3YR6OWHO'
 aws_secret_access_key = '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'
-region_name = 'ap-southeast-2'
+region_name = 'us-east-2'
     
     # Initialize an S3 client
 s3 = boto3.client('s3', 
@@ -20,8 +20,8 @@ s3 = boto3.client('s3',
                 aws_secret_access_key=aws_secret_access_key,
                 region_name=region_name)
 
-bucket_name = 'foodqast'
-file_name = 'patients.csv'
+bucket_name = 'dentistry-zenn1'
+file_name = f'dev/patients.csv'
 
 # Function to check if file exists in S3
 def check_file_exists(bucket, key):
