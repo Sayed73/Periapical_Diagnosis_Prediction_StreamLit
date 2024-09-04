@@ -123,13 +123,6 @@ def main():
     # Convert the input strings to numeric values
     tooth_open_history = 0 if tooth_open_history == 'No' else 1 if tooth_open_history == 'Yes' else 99
 
-    st.write('palpation : ', palpation)
-    st.write('percussion : ', percussion)
-    st.write('mobility : ', mobility)
-    st.write('swelling_eo : ', swelling_eo)
-    st.write('swelling_io : ', swelling_io)
-    st.write('sinus_tract : ', sinus_tract)
-
     # Column 3 for PAI features
     with col3:
         st.markdown('<p style="text-align:center; font-size:26px; font-weight:bold;">C. Radiographic Examination</p>', unsafe_allow_html=True)
