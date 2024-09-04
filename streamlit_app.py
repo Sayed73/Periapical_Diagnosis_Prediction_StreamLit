@@ -215,7 +215,7 @@ def main():
         ])
         new_record['periapical_diagnosis'] = predicted_class_periapical
         new_record['pulpal_diagnosis'] = predicted_class_pulpal
-        new_record['record_date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        new_record['record_date'] = datetime.now().strftime("%Y-%m-%d")
 
         try:
             if check_file_exists(bucket_name, file_name):
