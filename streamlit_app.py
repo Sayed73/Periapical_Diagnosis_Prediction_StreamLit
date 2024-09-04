@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import boto3
-from io import StringIO
+from io import BytesIO
 from botocore.exceptions import ClientError
 from datetime import datetime
 
