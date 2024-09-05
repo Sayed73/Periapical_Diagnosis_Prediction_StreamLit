@@ -226,7 +226,7 @@ def main():
 
         # Save the record to S3
         # Convert features to a list of 'NA' if the value is 99
-        features_na = ['NA' if x == 99 else x for x in features]
+        features_na = [pd.NaN if x == 99 else x for x in features]
         
         new_record = pd.DataFrame([features_na], columns=[
             'pain_score', 'Painkiller_usage', 'Pain_duration', 'affected_tooth', 'tooth_open_history', 
