@@ -155,7 +155,31 @@ def main():
                 else:
                     acceptability = 0
 
+    # New section for user diagnosis
+    st.subheader("Your Diagnosis")
+    
+    # Options for pulpal diagnosis
+    pulpal_options = [
+        'Asymptomatic irreversible pulpitis',
+        'Necrotic pulp',
+        'Previously initiated therapy',
+        'Previously treated tooth',
+        'Symptomatic irreversible pulpitis',
+        'Reversible pulpitis'
+    ]
+    
+    # Options for periapical diagnosis
+    periapical_options = [
+        'Acute apical abscess',
+        'Asymptomatic apical periodontitis',
+        'Chronic apical abscess',
+        'Normal periapical tissues',
+        'Symptomatic apical periodontitis'
+    ]
 
+    
+    user_pulpal_diagnose = st.selectbox("What is the pulpal diagnosis?", pulpal_options)
+    user_periapical_diagnose = st.selectbox("What is the periapical diagnosis?", periapical_options)
 
     # Predict when button is clicked
     if st.button('Diagnose'):
@@ -193,7 +217,7 @@ def main():
         elif prediction_pulpal == 4:
             predicted_class_pulpal = 'Symptomatic irreversible pulpitis'
         else:
-            predicted_class_pulpal = 'reversible pulpitis'
+            predicted_class_pulpal = 'Reversible pulpitis'
 
         # Display predicted class and probabilities
         # st.markdown(f'<p style="font-size:24px; color:black; font-weight:bold;">Diagnosis :</p>', unsafe_allow_html=True)
@@ -206,8 +230,11 @@ def main():
             'palpation', 'percussion', 'mobility', 'PAI_1', 'PAI_2', 'PAI_3', 'PAI_4', 'PAI_5', 
             'acceptability', 'swelling_eo', 'swelling_io', 'sinus_tract', 'Pulp_Vitality'
         ])
-        new_record['periapical_diagnosis'] = predicted_class_periapical
+        
         new_record['pulpal_diagnosis'] = predicted_class_pulpal
+        new_record['periapical_diagnosis'] = predicted_class_periapical
+        new_record['user_pulpal_diagnose'] = user_pulpal_diagnose
+        new_record['user_periapical_diagnose'] = user_periapical_diagnose
         new_record['record_date'] = datetime.now().strftime("%Y-%m-%d")
 
         try:
