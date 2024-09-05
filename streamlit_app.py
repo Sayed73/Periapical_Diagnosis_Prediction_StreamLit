@@ -225,7 +225,10 @@ def main():
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Periapical diagnosis:</strong> {predicted_class_periapical}  </p>', unsafe_allow_html=True)
 
         # Save the record to S3
-        new_record = pd.DataFrame([features], columns=[
+        # Convert features to a list of 'NA' if the value is 99
+        features_na = ['NA' if x == 99 else x for x in features]
+        
+        new_record = pd.DataFrame([features_na], columns=[
             'pain_score', 'Painkiller_usage', 'Pain_duration', 'affected_tooth', 'tooth_open_history', 
             'palpation', 'percussion', 'mobility', 'PAI_1', 'PAI_2', 'PAI_3', 'PAI_4', 'PAI_5', 
             'acceptability', 'swelling_eo', 'swelling_io', 'sinus_tract', 'Pulp_Vitality'
@@ -238,19 +241,17 @@ def main():
         new_record['record_date'] = datetime.now().strftime("%Y-%m-%d")
 
         try:
-            # if check_file_exists(bucket_name, file_name):
-            #     existing_df = read_parquet_from_s3(bucket_name, file_name)
-            #     updated_df = pd.concat([existing_df, new_record], ignore_index=True)
-            #     # Remove duplicates, keeping the first occurrence
-            #     updated_df = updated_df.drop_duplicates(keep='first')
-            # Always overwrite the existing file with the new record
-            write_parquet_to_s3(new_record, bucket_name, file_name)
-            st.success("Record saved successfully! Existing data has been overwritten.")
-            # else:
-            #     updated_df = new_record
+            if check_file_exists(bucket_name, file_name):
+                existing_df = read_parquet_from_s3(bucket_name, file_name)
+                updated_df = pd.concat([existing_df, new_record], ignore_index=True)
+                # Remove duplicates, keeping the first occurrence
+                updated_df = updated_df.drop_duplicates(keep='first')
+            
+            else:
+                updated_df = new_record
 
-            # write_parquet_to_s3(updated_df, bucket_name, file_name)
-            # st.success("Record saved successfully!")
+            write_parquet_to_s3(updated_df, bucket_name, file_name)
+            st.success("Record saved successfully!")
         except Exception as e:
             st.error(f"An error occurred while saving the record: {str(e)}")
         
