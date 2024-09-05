@@ -57,6 +57,21 @@ def test_view_parquet_file():
     else:
         st.write("Parquet file does not exist in the S3 bucket.")
 
+def get_parquet_download_link(bucket, key):
+    """
+    Generate a download link for the Parquet file
+    """
+    try:
+        # Read the Parquet file from S3
+        response = s3.get_object(Bucket=bucket, Key=key)
+        parquet_content = response['Body'].read()
+        
+        # Create a download link
+        b64 = base64.b64encode(parquet_content).decode()
+        href = f'<a href="data:application/octet-stream;base64,{b64}" download="{key}">Download Parquet File</a>'
+        return href
+    except Exception as e:
+        return f"Error generating download link: {str(e)}"
 
 st.markdown("""
     <style>
@@ -258,7 +273,14 @@ def main():
     # Add a button to view the Parquet file contents
     # if st.button('View Parquet File Contents'):
     #     test_view_parquet_file()
-        
+    # Add a download button for the Parquet file
+    st.subheader("Download Data")
+    if st.button("Generate Download Link"):
+        if check_file_exists(bucket_name, file_name):
+            download_link = get_parquet_download_link(bucket_name, file_name)
+            st.markdown(download_link, unsafe_allow_html=True)
+        else:
+            st.warning("No data file exists yet. Make a diagnosis first to create the file.")    
 if __name__ == "__main__":
     main()
     test_view_parquet_file()
