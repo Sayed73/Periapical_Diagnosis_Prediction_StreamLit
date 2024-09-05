@@ -246,11 +246,11 @@ def main():
             # Always overwrite the existing file with the new record
             write_parquet_to_s3(new_record, bucket_name, file_name)
             st.success("Record saved successfully! Existing data has been overwritten.")
-            else:
-                updated_df = new_record
+            # else:
+            #     updated_df = new_record
 
-            write_parquet_to_s3(updated_df, bucket_name, file_name)
-            st.success("Record saved successfully!")
+            # write_parquet_to_s3(updated_df, bucket_name, file_name)
+            # st.success("Record saved successfully!")
         except Exception as e:
             st.error(f"An error occurred while saving the record: {str(e)}")
         
