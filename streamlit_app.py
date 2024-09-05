@@ -156,7 +156,7 @@ def main():
                     acceptability = 0
 
     # New section for user diagnosis
-    st.subheader("Your Diagnosis")
+    st.markdown('<p style="font-size:26px; font-weight:bold;">Your Diagnosis</p>', unsafe_allow_html=True)
     
     # Options for pulpal diagnosis
     pulpal_options = [
