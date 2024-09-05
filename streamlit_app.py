@@ -44,8 +44,15 @@ def read_parquet_from_s3(bucket, key):
 
 # Function to write Parquet to S3
 def write_parquet_to_s3(df, bucket, key):
+    # parquet_buffer = BytesIO()
+    # df.to_parquet(parquet_buffer, index=False)
+    # s3.put_object(Bucket=bucket, Key=key, Body=parquet_buffer.getvalue())
+    # Replace NaN with 'NA' in the DataFrame
+    df_na_rep = df.fillna('NA')
+    # Save to a Parquet buffer
     parquet_buffer = BytesIO()
-    df.to_parquet(parquet_buffer, index=False)
+    df_na_rep.to_parquet(parquet_buffer, index=False)
+    # Upload to S3
     s3.put_object(Bucket=bucket, Key=key, Body=parquet_buffer.getvalue())
 
 # Test function to view Parquet file contents
