@@ -226,18 +226,18 @@ def main():
 
         # Save the record to S3
         # Convert features to a list of 'NA' if the value is 99
-        features_na = [pd.NaN if x == 99 else x for x in features]
+        features_na = [np.nan if x == 99 else x for x in features]
         
         new_record = pd.DataFrame([features_na], columns=[
             'pain_score', 'Painkiller_usage', 'Pain_duration', 'affected_tooth', 'tooth_open_history', 
             'palpation', 'percussion', 'mobility', 'PAI_1', 'PAI_2', 'PAI_3', 'PAI_4', 'PAI_5', 
             'acceptability', 'swelling_eo', 'swelling_io', 'sinus_tract', 'Pulp_Vitality'
         ])
-        # Convert columns to appropriate types
-        numeric_columns = ['Pain_duration', 'affected_tooth', 'tooth_open_history', 'acceptability', 'Pulp_Vitality']
+        # # Convert columns to appropriate types
+        # numeric_columns = ['Pain_duration', 'affected_tooth', 'tooth_open_history', 'acceptability', 'Pulp_Vitality']
         
-        for col in numeric_columns:
-            new_record[col] = pd.to_numeric(new_record[col], errors='coerce')
+        # for col in numeric_columns:
+        #     new_record[col] = pd.to_numeric(new_record[col].replace("NA", np.nan), errors='coerce')
         
         new_record['pulpal_diagnosis'] = predicted_class_pulpal
         new_record['periapical_diagnosis'] = predicted_class_periapical
