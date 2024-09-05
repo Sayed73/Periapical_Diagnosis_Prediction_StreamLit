@@ -238,11 +238,14 @@ def main():
         new_record['record_date'] = datetime.now().strftime("%Y-%m-%d")
 
         try:
-            if check_file_exists(bucket_name, file_name):
-                existing_df = read_parquet_from_s3(bucket_name, file_name)
-                updated_df = pd.concat([existing_df, new_record], ignore_index=True)
-                # Remove duplicates, keeping the first occurrence
-                updated_df = updated_df.drop_duplicates(keep='first')
+            # if check_file_exists(bucket_name, file_name):
+            #     existing_df = read_parquet_from_s3(bucket_name, file_name)
+            #     updated_df = pd.concat([existing_df, new_record], ignore_index=True)
+            #     # Remove duplicates, keeping the first occurrence
+            #     updated_df = updated_df.drop_duplicates(keep='first')
+            # Always overwrite the existing file with the new record
+            write_parquet_to_s3(new_record, bucket_name, file_name)
+            st.success("Record saved successfully! Existing data has been overwritten.")
             else:
                 updated_df = new_record
 
