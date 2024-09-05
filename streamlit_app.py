@@ -6,6 +6,7 @@ import boto3
 from io import BytesIO
 from botocore.exceptions import ClientError
 from datetime import datetime
+import base64
 
 # Load the saved model
 model_periapical = pickle.load(open('Periapical_Diagnosis_Prediction.sav', 'rb'))
