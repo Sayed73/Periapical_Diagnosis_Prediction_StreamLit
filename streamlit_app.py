@@ -233,11 +233,11 @@ def main():
             'palpation', 'percussion', 'mobility', 'PAI_1', 'PAI_2', 'PAI_3', 'PAI_4', 'PAI_5', 
             'acceptability', 'swelling_eo', 'swelling_io', 'sinus_tract', 'Pulp_Vitality'
         ])
-        # # Convert columns to appropriate types
-        # numeric_columns = ['Pain_duration', 'affected_tooth', 'tooth_open_history', 'acceptability', 'Pulp_Vitality']
+        # Convert columns to appropriate types
+        numeric_columns = ['Pain_duration', 'affected_tooth', 'tooth_open_history', 'acceptability', 'Pulp_Vitality']
         
-        # for col in numeric_columns:
-        #     new_record[col] = new_record[col].astype(str)
+        for col in numeric_columns:
+            new_record[col] = new_record[col].astype(str)
         
         new_record['pulpal_diagnosis'] = predicted_class_pulpal
         new_record['periapical_diagnosis'] = predicted_class_periapical
