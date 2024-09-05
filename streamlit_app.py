@@ -230,6 +230,6 @@ def main():
         
 if __name__ == "__main__":
     main()
-    # test_view_parquet_file()
+    test_view_parquet_file()
     # test_s3_record_addition()
 
