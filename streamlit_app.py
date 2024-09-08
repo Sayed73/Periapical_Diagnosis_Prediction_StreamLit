@@ -252,7 +252,7 @@ def main():
                 updated_df = new_record
 
             write_parquet_to_s3(updated_df, bucket_name, file_name)
-            st.success("Record saved successfully!")
+            # st.success("Record saved successfully!")
         except Exception as e:
             st.error(f"An error occurred while saving the record: {str(e)}")
         
