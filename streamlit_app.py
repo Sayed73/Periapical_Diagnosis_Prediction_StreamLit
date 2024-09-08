@@ -48,6 +48,16 @@ def write_parquet_to_s3(df, bucket, key):
     df.to_parquet(parquet_buffer, index=False)
     s3.put_object(Bucket=bucket, Key=key, Body=parquet_buffer.getvalue())
 
+# Test function to view Parquet file contents
+def test_view_parquet_file():
+    if check_file_exists(bucket_name, file_name):
+        df = read_parquet_from_s3(bucket_name, file_name)
+        st.write("Contents of the Parquet file:")
+        st.dataframe(df)
+        st.write(f"Total number of records: {len(df)}")
+    else:
+        st.write("Parquet file does not exist in the S3 bucket.")
+
 st.markdown("""
     <style>
     .stButton button {
@@ -259,4 +269,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    test_view_parquet_file()
 
