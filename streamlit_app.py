@@ -225,10 +225,10 @@ def main():
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Periapical diagnosis:</strong> {predicted_class_periapical}  </p>', unsafe_allow_html=True)
         # Compare user input with predictions
         if user_pulpal_diagnose == predicted_class_pulpal and user_periapical_diagnose == predicted_class_periapical:
-            st.success("Well done! Your diagnoses match the prediction.")
+            st.success("Well done! Your diagnoses match the prediction.🎉🥳")
             st.balloons()  # Optional: show balloons as a celebration
         else:
-            st.warning("Your diagnosis does not match the predicted diagnosis.")
+            st.warning("Your diagnosis does not match the predicted diagnosis.😔😞")
 
         # Save the record to S3
         columns = [
