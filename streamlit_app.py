@@ -48,16 +48,6 @@ def write_parquet_to_s3(df, bucket, key):
     df.to_parquet(parquet_buffer, index=False)
     s3.put_object(Bucket=bucket, Key=key, Body=parquet_buffer.getvalue())
 
-# Test function to view Parquet file contents
-def test_view_parquet_file():
-    if check_file_exists(bucket_name, file_name):
-        df = read_parquet_from_s3(bucket_name, file_name)
-        st.write("Contents of the Parquet file:")
-        st.dataframe(df)
-        st.write(f"Total number of records: {len(df)}")
-    else:
-        st.write("Parquet file does not exist in the S3 bucket.")
-
 st.markdown("""
     <style>
     .stButton button {
@@ -224,10 +214,10 @@ def main():
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Periapical diagnosis:</strong> {predicted_class_periapical}  </p>', unsafe_allow_html=True)
         # Compare user input with predictions
         if user_pulpal_diagnose == predicted_class_pulpal and user_periapical_diagnose == predicted_class_periapical:
-            st.success("Well done! Your diagnoses match the prediction.🎉🥳")
+            st.success("Well done! Your diagnoses match the prediction.🥳🎉")
             st.balloons()
         else:
-            st.warning("Your diagnosis does not match the predicted diagnosis.😔😞")
+            st.warning("Your diagnosis does not match the predicted diagnosis.😔")
 
         # Save the record to S3
         columns = [
@@ -269,6 +259,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    test_view_parquet_file()
-    # test_s3_record_addition()
 
