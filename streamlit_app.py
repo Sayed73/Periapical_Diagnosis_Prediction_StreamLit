@@ -224,7 +224,7 @@ def main():
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Pulpal diagnosis:</strong> {predicted_class_pulpal}  </p>', unsafe_allow_html=True)
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Periapical diagnosis:</strong> {predicted_class_periapical}  </p>', unsafe_allow_html=True)
         # Compare user input with predictions
-        if user_pulpal_diagnose == prediction_pulpal and user_periapical_diagnose == prediction_periapical:
+        if user_pulpal_diagnose == predicted_class_pulpal and user_periapical_diagnose == predicted_class_periapical:
             st.success("Well done! Your diagnoses match the prediction.")
             st.balloons()  # Optional: show balloons as a celebration
         else:
