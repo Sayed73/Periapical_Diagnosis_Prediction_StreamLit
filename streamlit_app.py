@@ -220,15 +220,14 @@ def main():
             predicted_class_pulpal = 'Reversible pulpitis'
 
         # Display predicted class and probabilities
-        # st.markdown(f'<p style="font-size:24px; color:black; font-weight:bold;">Diagnosis :</p>', unsafe_allow_html=True)
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Pulpal diagnosis:</strong> {predicted_class_pulpal}  </p>', unsafe_allow_html=True)
         st.markdown(f'<p style="font-size:22px; color:#2e6c80;"><strong>Periapical diagnosis:</strong> {predicted_class_periapical}  </p>', unsafe_allow_html=True)
         # Compare user input with predictions
         if user_pulpal_diagnose == predicted_class_pulpal and user_periapical_diagnose == predicted_class_periapical:
-            st.success("Well done! Your diagnoses match the prediction.")
-            st.balloons()  # Optional: show balloons as a celebration
+            st.success("Well done! Your diagnoses match the prediction.🎉🥳")
+            st.balloons()
         else:
-            st.warning("Your diagnosis does not match the predicted diagnosis.")
+            st.warning("Your diagnosis does not match the predicted diagnosis.😔😞")
 
         # Save the record to S3
         columns = [
@@ -258,9 +257,6 @@ def main():
                 updated_df = pd.concat([existing_df, new_record], ignore_index=True)
                 # Remove duplicates cases, keeping the first occurrence
                 updated_df = updated_df.drop_duplicates(subset=columns, keep='first')
-            # Always overwrite the existing file with the new record
-            # write_parquet_to_s3(new_record, bucket_name, file_name)
-            # st.success("Record saved successfully! Existing data has been overwritten.")
             
             else:
                 updated_df = new_record
@@ -270,9 +266,6 @@ def main():
         except Exception as e:
             st.error(f"An error occurred while saving the record: {str(e)}")
         
-    # Add a button to view the Parquet file contents
-    # if st.button('View Parquet File Contents'):
-    #     test_view_parquet_file()
 
 if __name__ == "__main__":
     main()
