@@ -226,7 +226,9 @@ def main():
         # Compare user input with predictions
         if user_pulpal_diagnose == predicted_class_pulpal and user_periapical_diagnose == predicted_class_periapical:
             st.success("Well done! Your diagnoses match the prediction.")
-            st.toast()  # Optional: show balloons as a celebration
+            st.balloons()  # Optional: show balloons as a celebration
+            st.experimental_rerun()  # Reruns the app, useful for dynamic resets
+
         else:
             st.warning("Your diagnosis does not match the predicted diagnosis.")
 
