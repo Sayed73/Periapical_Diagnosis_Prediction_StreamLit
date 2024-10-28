@@ -259,5 +259,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    read_parquet_from_s3(bucket_name, file_name)
+    df = read_parquet_from_s3(bucket_name, file_name)
+    st.dataframe(df)
 
